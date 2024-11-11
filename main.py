@@ -1,10 +1,50 @@
-from flask import Flask, render_template_string, request, redirect, url_for
+from flask import Flask, render_template_string, request, redirect, url_for, session
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'  # Necessary for session handling
 
 # Homepage (Login Page)
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Validate login credentials
+        if username == 'admin' and password == 'admin123':  # Replace with your own logic
+            session['logged_in'] = True  # Store login state in session
+            return redirect(url_for('options'))  # Redirect to the options page
+        else:
+            return render_template_string("""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Faizu Apk - Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: url('https://raw.githubusercontent.com/FaiziXd/Faizu-Apk/refs/heads/main/9c00c9c67343002135c21fbce5c7c3f5.jpg') no-repeat center center fixed; background-size: cover; }
+        .login-container { background-color: rgba(0, 0, 0, 0.5); padding: 30px; width: 300px; margin: 100px auto; border-radius: 10px; color: white; text-align: center; }
+        input[type="text"], input[type="password"] { padding: 10px; width: 100%; margin: 10px 0; border-radius: 5px; border: none; }
+        button { padding: 10px 20px; background-color: #f00; border: none; color: white; width: 100%; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>The Faizu Apk</h2>
+        <form method="POST" action="/">
+            <input type="text" name="username" placeholder="Enter username" required>
+            <input type="password" name="password" placeholder="Enter password" required>
+            <button type="submit">Login</button>
+        </form>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
+            """)
+
     return render_template_string("""
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +62,7 @@ def index():
 <body>
     <div class="login-container">
         <h2>The Faizu Apk</h2>
-        <form method="POST" action="/options">
+        <form method="POST" action="/">
             <input type="text" name="username" placeholder="Enter username" required>
             <input type="password" name="password" placeholder="Enter password" required>
             <button type="submit">Login</button>
@@ -33,14 +73,12 @@ def index():
     """)
 
 # Options Page after login
-@app.route('/options', methods=['POST'])
+@app.route('/options')
 def options():
-    username = request.form.get('username')
-    password = request.form.get('password')
+    if 'logged_in' not in session:  # Check if user is logged in
+        return redirect(url_for('index'))  # Redirect back to login if not logged in
 
-    # Check login credentials
-    if username == 'admin' and password == 'admin123':  # Replace with your own logic
-        return render_template_string("""
+    return render_template_string("""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,8 +103,6 @@ def options():
 </body>
 </html>
         """)
-    else:
-        return redirect(url_for('index'))  # Redirect back to login if credentials are incorrect
 
 # Password Page for accessing specific links
 @app.route('/password', methods=['POST'])
