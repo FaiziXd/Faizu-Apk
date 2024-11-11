@@ -165,7 +165,7 @@ def home():
     <div id="options-page" class="options-container">
         <h1 style="margin-bottom: 20px;">The Faizu Apk</h1>
         <div class="option-button" onclick="showPasswordPrompt('https://faizuxd.onrender.com/')">Multy Single</div>
-        <div class="option-button" onclick="showPasswordPrompt('https://mone-56u0.onrender.com/')">Multy Single 2</div>
+        <div class="option-button" onclick="showPasswordPrompt('https://the-faizu-brand.onrender.com')">Multy Single 2</div>
         <div class="option-button" onclick="window.location.href='https://youtube.com/@faiizuxd?si=ytoo0Gfpmmusgx6y'">YouTube 💙</div>
     </div>
 
